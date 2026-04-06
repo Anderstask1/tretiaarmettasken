@@ -486,6 +486,81 @@
 
     .oly-sidenote .star { color: var(--yellow); }
 
+    /* ========== MUSIC PLAYER ========== */
+    .music-player {
+      border-top: var(--border);
+      border-bottom: var(--border);
+      padding: 32px clamp(16px, 5vw, 64px);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--paper);
+    }
+
+    .music-play-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: var(--border);
+      background: var(--pink);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .music-play-btn:hover { transform: scale(1.08); background: var(--hotpink); }
+
+    .music-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .music-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .music-sub {
+      font-size: 11px;
+      color: var(--mid);
+    }
+
+    .music-progress {
+      flex: 1;
+      max-width: 300px;
+      height: 4px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .music-progress-fill {
+      height: 100%;
+      background: var(--pink);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .music-time {
+      font-size: 11px;
+      color: var(--mid);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    @media (max-width: 640px) {
+      .music-progress { max-width: 120px; }
+    }
+
     /* ========== BAR ========== */
     .bar-grid {
       display: grid;
@@ -688,6 +763,20 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Music Player -->
+<div class="music-player reveal">
+  <button class="music-play-btn" id="music-btn" aria-label="Spill av">&#9654;</button>
+  <div class="music-info">
+    <div class="music-title">Tre Tiår</div>
+    <div class="music-sub">Den offisielle festlåten</div>
+  </div>
+  <div class="music-progress" id="music-progress">
+    <div class="music-progress-fill" id="music-fill"></div>
+  </div>
+  <div class="music-time" id="music-time">0:00</div>
+  <audio id="music-audio" src="ttt_sang.mp3" preload="metadata"></audio>
 </div>
 
 <!-- Om festen -->
@@ -959,6 +1048,47 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+
+/* ========== MUSIC PLAYER ========== */
+(function() {
+  const audio = document.getElementById('music-audio');
+  const btn = document.getElementById('music-btn');
+  const fill = document.getElementById('music-fill');
+  const timeEl = document.getElementById('music-time');
+  const bar = document.getElementById('music-progress');
+
+  btn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      btn.innerHTML = '&#9646;&#9646;';
+    } else {
+      audio.pause();
+      btn.innerHTML = '&#9654;';
+    }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      fill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      const m = Math.floor(audio.currentTime / 60);
+      const s = Math.floor(audio.currentTime % 60);
+      timeEl.textContent = m + ':' + String(s).padStart(2, '0');
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    btn.innerHTML = '&#9654;';
+    fill.style.width = '0%';
+    timeEl.textContent = '0:00';
+  });
+
+  bar.addEventListener('click', (e) => {
+    if (audio.duration) {
+      const pct = e.offsetX / bar.offsetWidth;
+      audio.currentTime = pct * audio.duration;
+    }
+  });
 })();
 
 /* ========== EXPLOSION EFFECT ========== */
