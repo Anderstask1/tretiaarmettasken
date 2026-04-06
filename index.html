@@ -721,34 +721,34 @@
 <div class="video-reel">
   <div class="video-reel-inner">
     <div class="video-reel-item">
-      <video src="IMG_1510.MP4" autoplay muted loop playsinline></video>
+      <video src="IMG_1510.MP4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
       <img src="ttt_img1.jpg" alt="">
     </div>
     <div class="video-reel-item">
-      <video src="IMG_1613.MP4" autoplay muted loop playsinline></video>
+      <video src="IMG_1613.MP4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
       <img src="ttt_img3.jpg" alt="">
     </div>
     <div class="video-reel-item">
-      <video src="IMG_2598.MP4" autoplay muted loop playsinline></video>
+      <video src="IMG_2598.MP4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
       <img src="ttt_img2.jpg" alt="">
     </div>
     <div class="video-reel-item">
-      <video src="EE8FADE0-C729-413E-90E9-46F44420368F.MP4" autoplay muted loop playsinline></video>
+      <video src="EE8FADE0-C729-413E-90E9-46F44420368F.MP4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
-      <video src="IMG_2387.mp4" autoplay muted loop playsinline></video>
+      <video src="IMG_2387.mp4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
       <img src="ttt_img4.jpg" alt="">
     </div>
     <div class="video-reel-item">
-      <video src="ttt_video6.mp4" autoplay muted loop playsinline></video>
+      <video src="ttt_video6.mp4" muted loop playsinline preload="none"></video>
     </div>
     <div class="video-reel-item">
       <img src="IMG_7489.jpg" alt="">
@@ -1075,6 +1075,20 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+
+/* ========== LAZY VIDEO PLAYBACK ========== */
+(function() {
+  const vobs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.play().catch(() => {});
+      } else {
+        e.target.pause();
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.video-reel-item video').forEach(v => vobs.observe(v));
 })();
 
 /* ========== MUSIC PLAYER ========== */
